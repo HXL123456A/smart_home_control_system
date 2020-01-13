@@ -1,0 +1,64 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              06/17/2019 14:53:58 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: E:\keil V5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardware\Key;.\System;.\Hardwar
+                    -e\InfraRed;.\Hardware\Secret;.\Hardware\LCD1602) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\
+                    -main.obj)
+
+line level    source
+
+   1          #include "Sys.h"
+   2          
+   3          
+   4          void choose(uchar i);
+   5          
+   6          
+   7          
+   8          void main()
+   9          {
+  10   1      //  uchar num=22;
+  11   1        uchar choosemode=0;
+  12   1      //  DUAN=0xff;
+  13   1      //  WEI=0x00;
+  14   1        InitLcd1602();
+  15   1      //  Lcd1602_Write_Cmd(0x01);
+  16   1      //  Lcd1602_Write_Cmd(0x80);
+  17   1        
+  18   1        while(1)
+  19   1        {
+  20   2          KeyAction();
+  21   2          
+  22   2          
+  23   2      //    num=KeyScan();
+  24   2      //    if(num!=22)
+  25   2      //    {
+  26   2      //      Lcd1602_Write_Cmd(0x01);
+  27   2      //      Lcd1602_Write_Data(num+'0');
+  28   2      //    }
+  29   2        }
+  30   1      }
+  31          
+  32          void choose(uchar i)
+  33          {
+  34   1        switch(i)
+  35   1        {
+  36   2          case 0:
+  37   2            break;
+  38   2        }
+  39   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     12    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,137 @@
+C51 COMPILER V9.59.0.0   DS1302                                                            06/20/2019 13:29:33 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE DS1302
+OBJECT MODULE PLACED IN .\Objects\DS1302.obj
+COMPILER INVOKED BY: E:\keil V5\C51\BIN\C51.EXE Hardware\DS1302\DS1302.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardware\Key;
+                    -.\System;.\Hardware\InfraRed;.\Hardware\Secret;.\Hardware\LCD1602;.\Hardware\DS18B20;.\Hardware\DS1302;.\Hardware\IIC;.\
+                    -Hardware\PCF8591;.\Hardware\ULN2003) DEBUG OBJECTEXTEND PRINT(.\Listings\DS1302.lst) TABS(2) OBJECT(.\Objects\DS1302.obj
+                    -)
+
+line level    source
+
+   1          #include "Sys.h"
+   2          
+   3          //时钟日历暂存数组，秒、分、时、日、月、周、年 初值为= 16年2月15日 周1 23:58:50
+   4          uchar TimeData[7]={50, 58, 21, 15, 2, 1, 16};
+   5          
+   6          void DS1302_W_Byte(uchar dat)
+   7          {
+   8   1        uchar i;
+   9   1        for(i = 0; i < 8; i++) //每次写1bit，写8次
+  10   1        {
+  11   2          TSCLK = 0;       //拉低时钟总线
+  12   2          TIO = dat & 0x01;  //从一字节最低位开始写
+  13   2          TSCLK = 1;       //拉高时钟总线，DS1302把数据读走
+  14   2          dat >>= 1;       //数据右移一位 
+  15   2        } 
+  16   1      }
+  17          
+  18          uchar DS1302_R_Byte()
+  19          {
+  20   1        uchar i, dat;
+  21   1        for(i = 0; i < 8; i++)  //每次写1bit，写8次
+  22   1        {
+  23   2          TSCLK = 0;      //拉低时钟总线，DS1302把数据放到数据总线上
+  24   2          dat >>= 1;      //数据右移一位，数据从最低位开始读 
+  25   2          if(TIO) dat |= 0x80;//读取数据
+  26   2          TSCLK = 1;      //拉高时钟总线
+  27   2        }
+  28   1        return dat;       //返回读取的数据
+  29   1      }
+  30          
+  31          void DS1302_W_DAT(uchar cmd, uchar dat)
+  32          {
+  33   1        TRST = 0;      //拉低使能端
+  34   1        TSCLK = 0;       //拉低数据总线
+  35   1        TRST = 1;      //拉高使能端，开始写数据
+  36   1        DS1302_W_Byte(cmd);  //写命令
+  37   1        DS1302_W_Byte(dat);  //写数据
+  38   1      }
+  39          
+  40          uchar DS1302_R_DAT(uchar cmd)
+  41          {
+  42   1        uchar dat;
+  43   1        TRST = 0;       //拉低使能端
+  44   1        TSCLK = 0;        //拉低数据总线
+  45   1        TRST = 1;       //拉高使能端，开始写数据
+  46   1        DS1302_W_Byte(cmd);   //写命令
+  47   1        dat = DS1302_R_Byte();  //读出数据
+  48   1        return dat;       //返回读出数据
+  49   1      }
+  50          
+  51          void DS1302_Clear_WP()
+  52          {
+C51 COMPILER V9.59.0.0   DS1302                                                            06/20/2019 13:29:33 PAGE 2   
+
+  53   1        DS1302_W_DAT(0x8e,0x00);  //把控制寄存器WP位置0
+  54   1      }
+  55          
+  56          void DS1302_Set_WP()
+  57          { 
+  58   1        DS1302_W_DAT(0x8e,0x80); //把控制寄存器WP位置1
+  59   1        TRST = 0;        //拉低使能端
+  60   1        TSCLK = 0;         //拉低数据总线
+  61   1      } 
+  62          
+  63          void Set_DS1302_Time(uchar addr)
+  64          {
+  65   1        uchar i, j;
+  66   1        DS1302_Clear_WP();    //清除写保护
+  67   1        for(i = 0; i < 7; i++)  //写入7个字节的时钟初始值
+  68   1        {
+  69   2          j = TimeData[i]/10;  //BCD码转换
+  70   2          TimeData[i] %= 10;   //BCD码转换
+  71   2          TimeData[i] += j*16; //BCD码转换
+  72   2          DS1302_W_DAT(addr, TimeData[i]); //先写DS1302时钟日历起始地址，再写数据
+  73   2          addr += 2;   //时钟日历寄存器地址+2转向下一个寄存器
+  74   2        }
+  75   1        DS1302_Set_WP(); //开起写保护   
+  76   1      }
+  77          
+  78          void Read_DS1302_Time(uchar addr)
+  79          {
+  80   1        uchar i;
+  81   1        DS1302_Clear_WP();      //清楚写保护
+  82   1        for(i = 0; i < 7; i++)  //从DS1302读取7个字节的时钟日历数据
+  83   1        {
+  84   2          TimeData[i] = DS1302_R_DAT(addr);//先写入要读取数据的寄存器起始地址，再读出数据存入TimeData数组
+  85   2          addr += 2;             //时钟日历寄存器地址+2转向下一个寄存器
+  86   2        }
+  87   1        DS1302_Set_WP();   //开起写保护
+  88   1      } 
+  89          
+  90          
+  91          uchar Dat_Chg_BCD(uchar dat)//数据转BCD
+  92          {
+  93   1          uchar dat1,dat2;
+  94   1          dat1=dat/10;
+  95   1          dat2=dat%10;
+  96   1          dat2=dat2+dat1*16;
+  97   1          return dat2;
+  98   1      }
+  99          
+ 100          uchar BCD_Chg_Dat(uchar dat)//BCD转数据
+ 101          {
+ 102   1          uchar dat1,dat2;
+ 103   1          dat1=dat/16;
+ 104   1          dat2=dat%16;
+ 105   1          dat2=dat2+dat1*10;
+ 106   1          return dat2;
+ 107   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    236    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V9.59.0.0   DS1302                                                            06/20/2019 13:29:33 PAGE 3   
+
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,14 @@
+".\Objects\main.obj",
+".\Objects\Key.obj",
+".\Objects\InfraRed.obj",
+".\Objects\LCD1602.obj",
+".\Objects\Secret.obj",
+".\Objects\DS18B20.obj",
+".\Objects\DS1302.obj",
+".\Objects\IIC.obj",
+".\Objects\PCF8591.obj",
+".\Objects\ULN2003.obj",
+".\Objects\Sys.obj",
+".\Objects\Delay.obj" 
+TO ".\Objects\HomeControl" 
+PRINT(".\Listings\HomeControl.m51") RAMSIZE(256) 

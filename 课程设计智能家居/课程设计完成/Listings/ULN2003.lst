@@ -1,0 +1,30 @@
+C51 COMPILER V9.59.0.0   ULN2003                                                           06/20/2019 11:18:59 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE ULN2003
+OBJECT MODULE PLACED IN .\Objects\ULN2003.obj
+COMPILER INVOKED BY: E:\keil V5\C51\BIN\C51.EXE Hardware\ULN2003\ULN2003.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardware\Ke
+                    -y;.\System;.\Hardware\InfraRed;.\Hardware\Secret;.\Hardware\LCD1602;.\Hardware\DS18B20;.\Hardware\DS1302;.\Hardware\IIC;
+                    -.\Hardware\PCF8591;.\Hardware\ULN2003) DEBUG OBJECTEXTEND PRINT(.\Listings\ULN2003.lst) TABS(2) OBJECT(.\Objects\ULN2003
+                    -.obj)
+
+line level    source
+
+   1          #include "Sys.h"
+   2          
+   3          unsigned char pwm_motor_val = 200;//左右电机占空比值,越小快
+   4          unsigned char pwm_t;//周期
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
